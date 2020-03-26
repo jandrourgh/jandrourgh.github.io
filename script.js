@@ -13,18 +13,29 @@ var framerate=30;
 var escalas = new Array();
 var colorAlpha = 1;
 var tiempoReseteo = 10;
+var rotateXCam = 0;
+var rotateYCam = 0;
+var rotateZCam = 0;
+var translateZCam=0;
 
 function setup() {
-  canvas = createCanvas(windowWidth, windowHeight);
+  
   background(backgroundColor);
-  // var gui = createGui("Cantidad de Ruido");
+  canvas = createCanvas(windowWidth, windowHeight, WEBGL);
+  document.oncontextmenu = function() { return false; }
+  
+  var gui = createGui("Cantidad de Ruido");
   // sliderRange(0, 1, 0.01);
   // gui.addGlobals("n");
-  // sliderRange(0, 2, 0.01);
-  // gui.addGlobals("offsetX");
-  // sliderRange(0, 2, 0.01);
-  // gui.addGlobals("offsetY");
-  // sliderRange(0.005, 0.05, 0.0001);
+  sliderRange(Math.round(PI*100)/100, PI*2, 0.01);
+  gui.addGlobals("rotateXCam");
+  sliderRange(Math.round(PI*100)/100, PI*2, 0.01);
+  gui.addGlobals("rotateYCam");
+  sliderRange(Math.round(PI*100)/100, PI*2, 0.01);
+  gui.addGlobals("rotateZCam");
+  sliderRange(-500, 0, 0.01);
+  gui.addGlobals("translateZCam");
+  sliderRange(0.005, 0.05, 0.0001);
   gui.addGlobals("incremento");
   sliderRange(1, 120, 1);
   gui.addGlobals("framerate");
@@ -32,25 +43,17 @@ function setup() {
   gui.addGlobals("colorAlpha");
   sliderRange(1, 20, 1);
   gui.addGlobals("tiempoReseteo");
-  // escalas = Object.keys(chroma.brewer).map(function(key) {
-  //   return [chroma.brewer[key]];
-  // });
   
   for(i=0; i<12; i++){
     let escala = chroma.scale([chroma.random().darken(10), chroma.random().darken(6), chroma.random().darken(5).darken(3),chroma.random(), chroma.random()]).colors(24)
     escalas.push(escala)
   }
-  // escalas = escalas.map(function(escala) {
-  //   return escala[0];
-  // });
-  escalas.forEach(function(escala) {
-    //console.log(escala)
-  });
   console.log(escalas)
   reseteaEscala();
   setInterval(() => {
     reseteaEscala();
   }, tiempoReseteo*1000);
+
 }
 
 function reseteaEscala() {
@@ -66,7 +69,12 @@ function colorRandom(escala) {
 
 
 function draw() {
-  
+  translate(-width/2, -height/2, translateZCam)
+  rotateX(Math.sqrt(rotateXCam));
+  rotateY(Math.sqrt(rotateYCam));
+  rotateZ(Math.sqrt(rotateZCam));
+  //translate(-height/2,-width/2)
+
   noStroke();
   let c = color(colorRandom(escala));
   c.setAlpha(colorAlpha);
@@ -90,7 +98,7 @@ function draw() {
 
     //console.log(noiseX, noiseY, x, y, radius)
     ellipse(x, y, radius);
-  
+    
   }
   n=n+incremento
   n=m
@@ -101,7 +109,16 @@ function draw() {
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
-function keyPressed(canvas) {
-  reseteaEscala();
-  background(backgroundColor);
+function keyPressed() {
+  console.log(keyCode)
+  if (keyCode == "32"){
+    reseteaEscala();
+    clear()
+    background(backgroundColor);
+  }else if( keyCode == 83){
+    var date = new Date;
+    console.log(date.getDay(), date.getHours(), date.getMinutes(), date.getSeconds())
+    var fichero = [date.getDay(), date.getHours(), date.getMinutes(), date.getSeconds()].join("-")
+    save(fichero+'.jpg');
+  }
 }
