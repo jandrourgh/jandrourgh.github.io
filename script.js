@@ -16,7 +16,9 @@ var tiempoReseteo = 10;
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
+  console.log("ee");
   background(backgroundColor);
+  console.log("ee");
   var gui = createGui("Cantidad de Ruido");
   sliderRange(0, 1, 0.01);
   gui.addGlobals("n");
