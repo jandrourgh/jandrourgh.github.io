@@ -38,6 +38,7 @@ function setup() {
   
   for(i=0; i<12; i++){
     let escala = chroma.scale([color("black"),chroma.random().darken(10), chroma.random().darken(6), chroma.random().darken(5).darken(3),chroma.random(), chroma.random()]).colors(24)
+    console.log(escala)
     escalas.push(escala)
   }
   // escalas = escalas.map(function(escala) {
